@@ -26,6 +26,12 @@ class SendSubmissionToCrm implements ShouldQueue
      */
     public array $backoff = [60, 300];
 
+    /**
+     * If the submission was deleted (e.g. spam) before the job runs,
+     * drop the job instead of failing it.
+     */
+    public bool $deleteWhenMissingModels = true;
+
     public function __construct(public ContactSubmission $submission)
     {
     }

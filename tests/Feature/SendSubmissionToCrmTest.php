@@ -79,5 +79,6 @@ class SendSubmissionToCrmTest extends TestCase
 
         $this->assertSame(3, $job->tries);
         $this->assertSame([60, 300], $job->backoff);
+        $this->assertTrue($job->deleteWhenMissingModels);
     }
 }

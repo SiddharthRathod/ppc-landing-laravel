@@ -25,6 +25,7 @@ return new class extends Migration
             $table->text('crm_response')->nullable(); // CRM reference, or the error message on failure
             $table->timestamp('sent_at')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

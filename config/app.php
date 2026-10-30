@@ -123,4 +123,19 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Demo Admin
+    |--------------------------------------------------------------------------
+    |
+    | Login created by AdminUserSeeder. The email is pre-filled on the
+    | /admin login page when APP_ENV=local. Change both on a real server.
+    |
+    */
+
+    'admin' => [
+        'email' => env('ADMIN_EMAIL', 'admin@ppc.test'),
+        'password' => env('ADMIN_PASSWORD', '123456789'),
+    ],
+
 ];
