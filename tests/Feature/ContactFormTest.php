@@ -2,10 +2,25 @@
 
 namespace Tests\Feature;
 
+use App\Enums\CrmStatus;
+use App\Jobs\SendSubmissionToCrm;
+use App\Models\ContactSubmission;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
 
 class ContactFormTest extends TestCase
 {
+    use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        // Record dispatched jobs instead of running them.
+        Queue::fake();
+    }
+
     /**
      * A submission that passes validation.
      *
@@ -20,16 +35,34 @@ class ContactFormTest extends TestCase
             'phone' => '+966 55 111 6121',
             'service' => 'Corporate video',
             'message' => 'Two-day corporate shoot in Riyadh next month.',
+            'website' => '', // honeypot, left empty by real visitors
         ];
     }
 
-    public function test_valid_submission_redirects_back_with_success_flag(): void
+    public function test_valid_submission_is_saved_and_queued_for_the_crm(): void
     {
         $response = $this->from(route('contact'))->post(route('contact.store'), $this->validData());
 
         $response->assertRedirect(route('contact'));
         $response->assertSessionHasNoErrors();
         $response->assertSessionHas('contact_sent', true);
+
+        $submission = ContactSubmission::sole();
+        $this->assertSame('ahmed@example.sa', $submission->email);
+        $this->assertSame(CrmStatus::Pending, $submission->crm_status);
+        $this->assertNotNull($submission->ip_address);
+
+        Queue::assertPushed(SendSubmissionToCrm::class, fn ($job) => $job->submission->is($submission));
+    }
+
+    public function test_submission_is_marked_skipped_when_crm_is_disabled(): void
+    {
+        config(['crm.enabled' => false]);
+
+        $this->post(route('contact.store'), $this->validData());
+
+        $this->assertSame(CrmStatus::Skipped, ContactSubmission::sole()->crm_status);
+        Queue::assertNothingPushed();
     }
 
     public function test_required_fields_are_validated(): void
@@ -39,6 +72,7 @@ class ContactFormTest extends TestCase
         $response->assertRedirect(route('contact'));
         $response->assertSessionHasErrors(['name', 'email', 'phone', 'message']);
         $response->assertSessionMissing('contact_sent');
+        $this->assertDatabaseCount('contact_submissions', 0);
     }
 
     public function test_optional_fields_can_be_left_empty(): void
@@ -49,6 +83,7 @@ class ContactFormTest extends TestCase
 
         $response->assertSessionHasNoErrors();
         $response->assertSessionHas('contact_sent', true);
+        $this->assertDatabaseCount('contact_submissions', 1);
     }
 
     public function test_submission_with_honeypot_filled_is_rejected(): void
@@ -59,5 +94,7 @@ class ContactFormTest extends TestCase
 
         $response->assertSessionHasErrors('website');
         $response->assertSessionMissing('contact_sent');
+        $this->assertDatabaseCount('contact_submissions', 0);
+        Queue::assertNothingPushed();
     }
 }
