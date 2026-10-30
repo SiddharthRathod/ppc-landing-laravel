@@ -1,11 +1,86 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 
-@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
-@source '../../storage/framework/views/*.php';
-@source '../**/*.blade.php';
-@source '../**/*.js';
+/* Laravel: keep these @source lines so Tailwind scans your Blade views */
+@source "../views";
+@source "../js";
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+  --font-sans: "Archivo", ui-sans-serif, system-ui, sans-serif;
+  --font-arabic: "IBM Plex Sans Arabic", "Archivo", sans-serif;
+
+  --color-ink: #1C1F22;
+  --color-ink-2: #24272B;
+  --color-ink-3: #2A2E32;
+  --color-ink-line: #3A3E43;
+  --color-ink-border: #4A4F55;
+  --color-steel: #6B7780;
+  --color-mist: #F1F2F2;
+  --color-fog: #D7D9DA;
+  --color-line: #E4E6E6;
+  --color-rule: #C9CCCF;
+  --color-muted: #55595D;
+  --color-slate: #3F4347;
+  --color-silver: #C4C8CC;
+  --color-cloud: #E1E3E5;
+  --color-snow: #F0F2F3;
+  --color-orange: #D9622B;
+  --color-orange-dark: #C4561F;
+  --color-rust: #A9461A;
+  --color-ember: #E2733F;
+  --color-peach: #FBEAE2;
+  --color-whatsapp: #25D366;
+}
+
+@layer base {
+  html { scroll-behavior: smooth; scroll-padding-top: 88px; -webkit-text-size-adjust: 100%; }
+  body { @apply bg-white font-sans text-ink antialiased; }
+  h1, h2, h3 { @apply font-extrabold tracking-[-.03em]; }
+  a { @apply transition-colors; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { transition: none !important; animation: none !important; }
+  }
+}
+
+/* Asymmetric "cut" corner used across the brand: cut-12, cut-40, lg:cut-120 ... */
+@utility cut-* {
+  border-radius: 0 calc(--value(integer) * 1px) 0 calc(--value(integer) * 1px);
+}
+
+@utility wrap {
+  width: 100%;
+  max-width: 1264px;
+  margin-inline: auto;
+  padding-inline: 16px;
+  @media (width >= 40rem) { padding-inline: 20px; }
+  @media (width >= 64rem) { padding-inline: 32px; }
+}
+
+@utility eyebrow {
+  @apply text-xs font-semibold uppercase tracking-[.24em] text-rust;
+}
+
+@utility accent-bar {
+  @apply block h-1 w-[50px] bg-orange;
+}
+
+@utility section-title {
+  @apply mt-[22px] text-[clamp(32px,4.4vw,52px)] leading-[1.05];
+}
+
+@utility btn {
+  @apply inline-flex min-h-[54px] cursor-pointer items-center justify-center gap-3 border-2 px-7 text-base font-semibold no-underline cut-12;
+}
+@utility btn-primary {
+  @apply btn border-orange bg-orange text-ink hover:border-orange-dark hover:bg-orange-dark hover:text-ink;
+}
+@utility btn-outline {
+  @apply btn border-ink bg-transparent text-ink hover:bg-ink hover:text-white;
+}
+@utility btn-outline-light {
+  @apply btn border-white bg-transparent text-white hover:bg-white hover:text-ink;
+}
+
+@utility field {
+  @apply min-h-[50px] w-full border-[1.5px] border-ink-border bg-ink-3 px-4 text-[15px] text-white cut-10 placeholder:text-[#9EA3A8] focus:border-orange focus:outline-2 focus:outline-offset-1 focus:outline-orange;
 }
