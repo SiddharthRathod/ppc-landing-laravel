@@ -3,6 +3,11 @@
 /* Laravel: keep these @source lines so Tailwind scans your Blade views */
 @source "../views";
 @source "../js";
+/* Laravel's pagination links (used on /blog) */
+@source "../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php";
+
+/* "prose" classes for blog post bodies (HTML from the admin's rich editor) */
+@plugin "@tailwindcss/typography";
 
 @theme {
   --font-sans: "Archivo", ui-sans-serif, system-ui, sans-serif;

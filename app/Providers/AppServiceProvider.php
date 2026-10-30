@@ -3,7 +3,10 @@
 namespace App\Providers;
 
 use App\Contracts\CrmClient;
+use App\Models\Post;
+use App\Models\SiteSetting;
 use App\Services\Crm\LogCrmClient;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use InvalidArgumentException;
 
@@ -26,6 +29,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // $settings in every site view (header, footer, WhatsApp button, contact blocks).
+        // once(): one database query per request, however many views ask for it.
+        View::composer(['layouts.site', 'pages.*', 'partials.*'], function ($view) {
+            $view->with('settings', once(fn () => SiteSetting::current()));
+        });
+
+        // Home page blog cards: the 3 latest published posts.
+        View::composer('partials.blog', function ($view) {
+            $view->with('latestPosts', Post::published()->latest('published_at')->take(3)->get());
+        });
     }
 }

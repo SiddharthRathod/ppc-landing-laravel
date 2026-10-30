@@ -6,8 +6,8 @@
       <h1 class="mt-[22px] text-[clamp(36px,5vw,60px)] leading-[1.02]">Get a quote within 24 hours</h1>
       <p class="mt-5 max-w-[440px] text-base leading-[1.65] text-silver lg:text-lg">Tell us what you need filmed, photographed or animated. A producer replies with scope, timeline and price within one working day.</p>
       <div class="mt-8 flex flex-col gap-3 text-lg font-bold break-words">
-        <a href="tel:+966551116121" class="hover:text-ember">+966 55 111 6121</a>
-        <a href="mailto:moiz@professionalphotography.sa" class="hover:text-ember">moiz@professionalphotography.sa</a>
+        @if ($settings->phone)<a href="{{ $settings->phoneHref() }}" class="hover:text-ember">{{ $settings->phone }}</a>@endif
+        @if ($settings->email)<a href="mailto:{{ $settings->email }}" class="hover:text-ember">{{ $settings->email }}</a>@endif
       </div>
       <p lang="ar" dir="rtl" class="mt-[26px] text-left font-arabic text-[22px] font-semibold">احصل على عرض سعر خلال ٢٤ ساعة</p>
     </div>

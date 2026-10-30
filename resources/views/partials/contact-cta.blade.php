@@ -7,12 +7,12 @@
       <p class="eyebrow text-white">Film · Photo · Animation · Drone · Audio</p>
       <h2 class="section-title text-[clamp(34px,4.6vw,56px)]">Get a quote within 24 hours</h2>
       <div class="mt-[26px] flex flex-col gap-3 text-lg font-bold break-words">
-        <a href="tel:+966551116121" class="hover:text-peach">+966 55 111 6121</a>
-        <a href="mailto:moiz@professionalphotography.sa" class="hover:text-peach">moiz@professionalphotography.sa</a>
+        @if ($settings->phone)<a href="{{ $settings->phoneHref() }}" class="hover:text-peach">{{ $settings->phone }}</a>@endif
+        @if ($settings->email)<a href="mailto:{{ $settings->email }}" class="hover:text-peach">{{ $settings->email }}</a>@endif
       </div>
       <div class="mt-[30px] flex flex-col gap-3.5 sm:flex-row sm:flex-wrap">
         <a href="{{ route('contact') }}" class="btn-primary">Send your brief <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-        <a href="https://wa.me/966551116121" class="btn-outline-light">WhatsApp us</a>
+        @if ($settings->whatsappUrl())<a href="{{ $settings->whatsappUrl() }}" class="btn-outline-light">WhatsApp us</a>@endif
       </div>
       <p lang="ar" dir="rtl" class="mt-[26px] text-left font-arabic text-[22px] font-semibold">احصل على عرض سعر خلال ٢٤ ساعة</p>
     </div>

@@ -1,14 +1,14 @@
 <header class="group sticky top-0 z-40 border-b border-line bg-white" data-header>
   <div class="wrap flex min-h-[76px] items-center justify-between gap-3 lg:min-h-[100px] lg:gap-6">
     <a href="{{ route('home') }}" aria-label="Professional Photography Company home">
-      <img src="{{ asset('images/logo.png') }}" alt="Professional Photography Company" class="block h-[46px] w-auto lg:h-[60px]">
+      <img src="{{ $settings->logoUrl() }}" alt="Professional Photography Company" class="block h-[46px] w-auto lg:h-[60px]">
     </a>
     <nav aria-label="Main" class="hidden gap-6 text-base font-medium lg:flex xl:gap-[38px]">
       <a href="{{ route('home') }}#services" class="hover:text-rust">Services</a>
       <a href="{{ route('home') }}#portfolio" class="hover:text-rust">Work</a>
       <a href="{{ route('home') }}#industries" class="hover:text-rust">Industries</a>
       <a href="#" class="hover:text-rust">About</a>
-      <a href="#" class="hover:text-rust">Blog</a>
+      <a href="{{ route('blog.index') }}" class="hover:text-rust">Blog</a>
     </nav>
     <div class="flex items-center gap-3 lg:gap-6">
       <a href="#" lang="ar" class="hidden font-arabic text-[17px] hover:text-rust lg:inline">العربية</a>
@@ -30,7 +30,7 @@
         <a href="{{ route('home') }}#portfolio" class="border-b border-mist py-3">Work</a>
         <a href="{{ route('home') }}#industries" class="border-b border-mist py-3">Industries</a>
         <a href="#" class="border-b border-mist py-3">About</a>
-        <a href="#" class="border-b border-mist py-3">Blog</a>
+        <a href="{{ route('blog.index') }}" class="border-b border-mist py-3">Blog</a>
         <a href="#" lang="ar" class="border-b border-mist py-3 font-arabic">العربية</a>
         <a href="{{ route('contact') }}" class="btn-primary mt-4 w-full">Get a quote in 24 hours</a>
       </div>
