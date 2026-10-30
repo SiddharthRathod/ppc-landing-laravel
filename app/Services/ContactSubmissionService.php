@@ -31,4 +31,17 @@ class ContactSubmissionService
 
         return $submission;
     }
+
+    /**
+     * Queue a failed or skipped submission for the CRM again (admin "Retry" action).
+     */
+    public function retryCrm(ContactSubmission $submission): void
+    {
+        $submission->update([
+            'crm_status' => CrmStatus::Pending,
+            'crm_response' => null,
+        ]);
+
+        SendSubmissionToCrm::dispatch($submission);
+    }
 }
