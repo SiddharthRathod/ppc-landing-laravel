@@ -81,6 +81,8 @@ Submissions are always saved before the CRM is called, so a CRM outage never los
 
 **SEO.** One Blade component (`<x-seo>`) renders the title, description, robots, canonical, Open Graph and Twitter tags from each page's or post's SEO fields, with fallbacks (hero photo or post image as the sharing image). The home page has Organization JSON-LD built from Site settings. `/sitemap.xml` lists published pages and posts only; `/robots.txt` blocks `/admin` in production and the whole site everywhere else, so staging copies are never indexed.
 
+**SEO breadcrumbs.** `App\Services\BreadcrumbService` builds the trail automatically from the current route and its bound model (Contact: Home › Contact Us; Blog: Home › Blog; post: Home › Blog › post title), so no page sets breadcrumbs by hand. A view composer passes it to the layout, which renders the `<x-breadcrumbs>` component (`<nav aria-label="Breadcrumb">`, current page as `aria-current="page"` without a link, horizontal scroll on phones) and a schema.org **BreadcrumbList** JSON-LD from the same trail. URLs come from `route()`, like the canonical tag, so they are absolute and the last item always equals the page's canonical URL. Each page has one trail, de-duplicated by URL. No breadcrumbs on the home page, on 404s or on unknown routes. New page types are one line in the service.
+
 **Images and video.** Uploads go to the `public` disk. Below-the-fold images load lazily; the hero image loads first (`fetchpriority="high"`). The hero video is an uploaded MP4 that plays muted and looped over the photo, which stays as the poster while it loads.
 
 **Code style.** Thin controllers, Form Requests for validation, a service for business logic, a queued job for the external call, enums for statuses (`CrmStatus`, `PostStatus`) and Eloquent casts.
@@ -91,7 +93,7 @@ Submissions are always saved before the CRM is called, so a CRM outage never los
 php artisan test
 ```
 
-99 tests: contact form validation and storage, the CRM job (success, retry, failure, no double send), every admin screen (Filament/Livewire tests), page rendering from blocks, HTML escaping, blog visibility rules, SEO tags, JSON-LD, sitemap and robots.txt, and a unit test for the phone number rule. Tests use an in-memory SQLite database and fake the queue and file storage.
+109 tests: contact form validation and storage, breadcrumbs and BreadcrumbList, the CRM job (success, retry, failure, no double send), every admin screen (Filament/Livewire tests), page rendering from blocks, HTML escaping, blog visibility rules, SEO tags, JSON-LD, sitemap and robots.txt, and a unit test for the phone number rule. Tests use an in-memory SQLite database and fake the queue and file storage.
 
 ## Lighthouse
 
@@ -102,7 +104,7 @@ Home page, Lighthouse 12 in Chrome, measured locally with `APP_ENV=production`:
 | Desktop | 99 | 100 | 100 | 100 |
 | Mobile | 84 | 100 | 100 | 100 |
 
-Mobile performance was measured on `php artisan serve`, which has no gzip compression or caching; a real web server adds both. The remaining gain is responsive image sizes: phones currently download the same 1400 px images as desktop (see "Next steps"). Layout shift is 0.
+Mobile performance was measured on `php artisan serve`, which has no gzip compression or caching; a real web server adds both. Layout shift is 0.
 
 ## Deploying
 
@@ -119,10 +121,3 @@ Mobile performance was measured on `php artisan serve`, which has no gzip compre
 - **Contact Us page:** not in the reference design, so it was designed in the same style.
 - **Blog pages** (`/blog`, `/blog/{slug}`) were added so the home page guide cards have somewhere to link to.
 - **Accessibility:** two colours were adjusted to pass WCAG AA contrast: the dark orange used for small labels (`#A9461A` → `#9A3F17`) and the text on the WhatsApp button (dark instead of white on WhatsApp green).
-
-## Next steps
-
-- **Responsive images:** create smaller versions of each uploaded image (e.g. 480, 960, 1400 px WebP) and serve them with `srcset`, so phones download less. The biggest remaining mobile performance gain.
-- **Connect the real CRM** once it is known (one `CrmClient` class).
-- **Arabic (RTL) version** if it is in scope.
-- **Admin email notification** for new submissions.

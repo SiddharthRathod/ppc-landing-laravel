@@ -72,9 +72,10 @@ class SeoTest extends TestCase
         $this->assertSame(['https://www.linkedin.com/company/ppc'], $schema['sameAs']);
     }
 
-    public function test_json_ld_is_only_on_the_home_page(): void
+    public function test_organization_json_ld_is_only_on_the_home_page(): void
     {
-        $this->get(route('contact'))->assertDontSee('application/ld+json', escape: false);
+        // Other pages have a BreadcrumbList (see BreadcrumbTest), but not the Organization.
+        $this->get(route('contact'))->assertDontSee('"@type":"Organization"', escape: false);
     }
 
     public function test_json_ld_cannot_be_broken_out_of_by_admin_text(): void

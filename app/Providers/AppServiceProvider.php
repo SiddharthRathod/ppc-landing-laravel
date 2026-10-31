@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Contracts\CrmClient;
 use App\Models\Post;
 use App\Models\SiteSetting;
+use App\Services\BreadcrumbService;
 use App\Services\Crm\LogCrmClient;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -38,6 +39,18 @@ class AppServiceProvider extends ServiceProvider
         // "Latest blog posts" section: the 3 latest published posts.
         View::composer('sections.blog', function ($view) {
             $view->with('latestPosts', Post::published()->latest('published_at')->take(3)->get());
+        });
+
+        // Breadcrumbs on every page that uses the site layout, built from the current route.
+        // Only one trail item (or none) means home or an unknown page: no breadcrumbs, no JSON-LD.
+        View::composer('layouts.site', function ($view) {
+            $breadcrumbs = app(BreadcrumbService::class);
+            $items = $breadcrumbs->forRequest(request());
+
+            $view->with([
+                'breadcrumbs' => $items,
+                'breadcrumbSchema' => count($items) > 1 ? $breadcrumbs->schema($items) : null,
+            ]);
         });
     }
 }

@@ -3,11 +3,8 @@
 @section('content')
 <article class="py-14 sm:py-[72px] lg:py-[100px]">
   <div class="wrap max-w-[860px]">
-    <a href="{{ route('blog.index') }}" class="inline-flex items-center gap-2 text-sm font-semibold hover:text-rust">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg> All guides
-    </a>
-
-    <span class="accent-bar mt-10"></span>
+    {{-- "Back to Blog" is in the breadcrumbs above. --}}
+    <span class="accent-bar"></span>
     @if ($post->category)
       <p class="eyebrow mt-[26px]">{{ $post->category }}</p>
     @endif
