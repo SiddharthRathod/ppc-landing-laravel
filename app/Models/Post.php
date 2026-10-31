@@ -80,6 +80,7 @@ class Post extends Model
             'description' => $this->meta_description ?: $this->excerpt,
             'canonical' => $this->canonical_url ?: route('blog.show', $this),
             'og_image' => $this->og_image ? Storage::disk('public')->url($this->og_image) : $this->imageUrl(),
+            'type' => 'article', // og:type
         ];
     }
 

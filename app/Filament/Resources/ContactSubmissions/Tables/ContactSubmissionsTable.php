@@ -23,11 +23,13 @@ class ContactSubmissionsTable
     public static function configure(Table $table): Table
     {
         return $table
+            // Shown by default: name, company, email, phone. The rest can be switched on under "Columns".
             ->columns([
                 TextColumn::make('created_at')
                     ->label('Received')
                     ->dateTime()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('company')
@@ -40,10 +42,11 @@ class ContactSubmissionsTable
                     ->searchable(),
                 TextColumn::make('service')
                     ->placeholder('-')
-                    ->toggleable(),
+                    ->toggleable(isToggledHiddenByDefault: false),
                 TextColumn::make('crm_status')
                     ->label('CRM')
-                    ->badge(), // label and colour come from the CrmStatus enum
+                    ->badge() // label and colour come from the CrmStatus enum
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('sent_at')
                     ->label('Sent to CRM')
                     ->dateTime()

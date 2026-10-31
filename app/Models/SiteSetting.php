@@ -69,4 +69,27 @@ class SiteSetting extends Model
     {
         return $this->whatsapp_number ? 'https://wa.me/'.$this->whatsapp_number : null;
     }
+
+    /**
+     * schema.org Organization for the home page (JSON-LD), so Google can show
+     * the company name, logo and contact details. Empty values are left out.
+     *
+     * @return array<string, mixed>
+     */
+    public function organizationSchema(): array
+    {
+        return array_filter([
+            '@context' => 'https://schema.org',
+            '@type' => 'Organization',
+            'name' => 'Professional Photography Company',
+            'url' => route('home'),
+            'logo' => $this->logoUrl(),
+            'email' => $this->email,
+            'telephone' => $this->phone,
+            'address' => ['@type' => 'PostalAddress', 'addressCountry' => 'SA'],
+            'areaServed' => 'SA',
+            'parentOrganization' => ['@type' => 'Organization', 'name' => 'Studio 52 Group'],
+            'sameAs' => array_column($this->social_links ?? [], 'url'),
+        ]);
+    }
 }

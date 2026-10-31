@@ -38,7 +38,7 @@
         <div>
           <label for="phone" class="mb-2 block text-[13px] font-semibold text-cloud">Phone or WhatsApp *</label>
           <input id="phone" name="phone" value="{{ old('phone') }}" type="tel" required autocomplete="tel" inputmode="tel" class="field" placeholder="+966 5x xxx xxxx">
-          <p data-error-for="phone" class="mt-1.5 {{ $errors->has('phone') ? '' : 'hidden' }} text-[13px] text-ember">{{ $errors->first('phone') ?: 'Enter a phone number we can reach.' }}</p>
+          <p data-error-for="phone" class="mt-1.5 {{ $errors->has('phone') ? '' : 'hidden' }} text-[13px] text-ember">{{ $errors->first('phone') ?: 'Enter a valid phone number with 8 to 15 digits, e.g. +966 55 111 6121.' }}</p>
         </div>
         <div class="sm:col-span-2">
           <label for="service" class="mb-2 block text-[13px] font-semibold text-cloud">What do you need?</label>

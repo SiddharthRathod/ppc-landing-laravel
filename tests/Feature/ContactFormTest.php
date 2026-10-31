@@ -7,6 +7,7 @@ use App\Jobs\SendSubmissionToCrm;
 use App\Models\ContactSubmission;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class ContactFormTest extends TestCase
@@ -96,5 +97,49 @@ class ContactFormTest extends TestCase
         $response->assertSessionMissing('contact_sent');
         $this->assertDatabaseCount('contact_submissions', 0);
         Queue::assertNothingPushed();
+    }
+
+    /**
+     * @return array<string, array{string}>
+     */
+    public static function validPhones(): array
+    {
+        return [
+            'international with spaces' => ['+966 55 111 6121'],
+            'local with dashes' => ['055-111-6121'],
+            'brackets' => ['(055) 111 6121'],
+            'digits only' => ['966551116121'],
+            'uk number' => ['+44 20 7946 0958'],
+        ];
+    }
+
+    /**
+     * @return array<string, array{string}>
+     */
+    public static function invalidPhones(): array
+    {
+        return [
+            'letters' => ['call me maybe'],
+            'too short' => ['12345'],
+            'too long' => ['+966 55 111 6121 1234 5678'],
+            'plus in the middle' => ['966+551116121'],
+            'other characters' => ['055/111/6121'],
+        ];
+    }
+
+    #[DataProvider('validPhones')]
+    public function test_common_phone_formats_are_accepted(string $phone): void
+    {
+        $this->post(route('contact.store'), array_merge($this->validData(), ['phone' => $phone]))
+            ->assertSessionHasNoErrors();
+    }
+
+    #[DataProvider('invalidPhones')]
+    public function test_invalid_phone_numbers_are_rejected(string $phone): void
+    {
+        $this->post(route('contact.store'), array_merge($this->validData(), ['phone' => $phone]))
+            ->assertSessionHasErrors('phone');
+
+        $this->assertDatabaseCount('contact_submissions', 0);
     }
 }

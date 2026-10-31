@@ -1,59 +1,99 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# PPC Landing Page
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Landing page, admin panel and CRM-ready contact form for **Professional Photography Company** (a Studio 52 Group company), built with Laravel 12, Filament 5 and Tailwind CSS 4.
 
-## About Laravel
+Take-home assignment for the Full Stack Laravel & PHP Developer role at Studio 52 Media and Technology Group.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## The three requirements
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+| Requirement | Where |
+|---|---|
+| Fully responsive, mobile-friendly landing page | Home page built from the reference design, checked in Chrome at phone (390 px) and desktop (1440 px) widths: hamburger menu, stacked columns, fluid headings, no horizontal scroll |
+| Admin panel to manage all page elements: content, images, videos, SEO (meta title, description, canonical URL…) | `/admin` → **Pages**: every section is an editable, reorderable block; **SEO** tab per page and per blog post; hero video (MP4) and showreel link; **Site settings** for logo, contact details and footer |
+| Contact form on the Contact Us page, integrated with the CRM, submissions stored and visible in the admin | `/contact` → saved first, then sent to the CRM by a queued job with retries; **Contact submissions** in the admin with CRM status, retry button, filters and CSV/XLSX export |
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Quick start
 
-## Learning Laravel
+Requirements: PHP 8.2+, Composer, Node 20+, and MySQL 8 or SQLite.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+```bash
+git clone https://github.com/SiddharthRathod/ppc-landing-laravel.git
+cd ppc-landing-laravel
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+composer run setup        # composer install, .env, app key, migrations, npm install + build
+php artisan db:seed       # demo admin, design content, 3 blog guides
+php artisan storage:link  # serves uploaded images from /storage
+```
 
-## Laravel Sponsors
+`.env.example` uses SQLite, so it works without a database server. For MySQL, set `DB_CONNECTION=mysql` and the `DB_*` values in `.env` before running the commands.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+Then run the site and the queue worker (two terminals):
 
-### Premium Partners
+```bash
+php artisan serve         # http://127.0.0.1:8000
+php artisan queue:work    # sends contact submissions to the CRM and builds exports
+```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+Or everything in one terminal: `composer run dev` (server, queue, logs and Vite).
 
-## Contributing
+> `APP_URL` in `.env` must be the address you open in the browser (default `http://127.0.0.1:8000`). Uploaded images and canonical URLs are built from it; if it differs, image previews in the admin will not load.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Demo login
 
-## Code of Conduct
+| URL | Email | Password |
+|---|---|---|
+| http://127.0.0.1:8000/admin | `admin@ppc.test` | `123456789` |
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+The email is pre-filled on the login page in the local environment. Change it with `ADMIN_EMAIL` / `ADMIN_PASSWORD` in `.env` and run `php artisan db:seed --class=AdminUserSeeder`.
 
-## Security Vulnerabilities
+## Admin panel
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+| Menu | What it manages |
+|---|---|
+| **Contact submissions** | Every enquiry from the form (read-only). CRM status badge (pending, sent, failed, skipped), **Retry CRM** button, filters, soft delete and restore, CSV/XLSX export |
+| **Pages** | Home and Contact Us. **Sections** tab: 11 block types (hero with stats and video, client logos, services, portfolio film strip, industries, process, why us, testimonial, latest posts, quote call-to-action, contact form). Add, edit, reorder, duplicate or remove sections. **SEO** tab: meta title, description, canonical URL, social sharing image, robots |
+| **Blog posts** | Guides with rich-text body, card image, category, publish date (empty = draft, future = scheduled) and SEO fields |
+| **Site settings** | Logos, phone, email, WhatsApp number, footer tagline (English and Arabic), footer link columns, cities, social links, CR and VAT numbers |
 
-## License
+## How it works
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+**Pages as blocks.** Each page stores its sections in a JSON `content` column, edited with Filament's Builder. Each block type has a class in `app/Filament/Blocks/` (its fields) and a Blade partial in `resources/views/sections/` (its markup). `PageController` loads the page and renders the sections in the order set in the admin. A new section type is one block class plus one partial.
+
+**Contact form and CRM.**
+
+```
+Form → StoreContactRequest (validation, honeypot, phone rule, 5 per minute per IP)
+     → ContactSubmissionService: save to contact_submissions, then queue SendSubmissionToCrm
+     → SendSubmissionToCrm: 3 tries (wait 1 min, then 5 min) → status "sent", or "failed" with the error
+```
+
+Submissions are always saved before the CRM is called, so a CRM outage never loses a lead; failed ones can be retried from the admin. The CRM sits behind the `App\Contracts\CrmClient` interface. The default `LogCrmClient` writes each lead to the log; connecting the real CRM (HubSpot, Zoho, Salesforce…) means one new class and one line in `AppServiceProvider`, selected with `CRM_DRIVER` in `.env`. `CRM_ENABLED=false` saves submissions as "skipped" without sending.
+
+**SEO.** One Blade component (`<x-seo>`) renders the title, description, robots, canonical, Open Graph and Twitter tags from each page's or post's SEO fields, with fallbacks (hero photo or post image as the sharing image). The home page has Organization JSON-LD built from Site settings. `/sitemap.xml` lists published pages and posts only; `/robots.txt` blocks `/admin` in production and the whole site everywhere else, so staging copies are never indexed.
+
+**Images and video.** Uploads go to the `public` disk. Below-the-fold images load lazily; the hero image loads first (`fetchpriority="high"`). The hero video is an uploaded MP4 that plays muted and looped over the photo, which stays as the poster while it loads.
+
+**Code style.** Thin controllers, Form Requests for validation, a service for business logic, a queued job for the external call, enums for statuses (`CrmStatus`, `PostStatus`) and Eloquent casts.
+
+## Tests
+
+```bash
+php artisan test
+```
+
+99 tests: contact form validation and storage, the CRM job (success, retry, failure, no double send), every admin screen (Filament/Livewire tests), page rendering from blocks, HTML escaping, blog visibility rules, SEO tags, JSON-LD, sitemap and robots.txt, and a unit test for the phone number rule. Tests use an in-memory SQLite database and fake the queue and file storage.
+
+## Deploying
+
+- `APP_ENV=production`, `APP_DEBUG=false` and `APP_URL=https://your-domain` (canonical URLs and the sitemap use it; robots.txt only allows indexing in production).
+- `php artisan storage:link`, then `php artisan config:cache route:cache view:cache`.
+- Keep `php artisan queue:work` running with Supervisor (or the host's equivalent), otherwise submissions stay "pending".
+- Use a real admin email and a strong password (`ADMIN_EMAIL`, `ADMIN_PASSWORD`).
+
+## Notes and open points
+
+- **Design and images:** the layout follows the reference design (desktop only); the mobile layout was designed to match it. Photos and client logos come from the reference and are placeholders until real assets arrive. All text and images are editable in the admin.
+- **CRM:** not named yet, so it is behind the interface above.
+- **Arabic:** Arabic lines from the design are included and editable; a full Arabic (RTL) version is not in scope until confirmed.
+- **Contact Us page:** not in the reference design, so it was designed in the same style.
+- **Blog pages** (`/blog`, `/blog/{slug}`) were added so the home page guide cards have somewhere to link to.

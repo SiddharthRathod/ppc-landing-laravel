@@ -21,7 +21,8 @@
   const checks = {
     name: (v) => v.trim().length > 1,
     email: (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()),
-    phone: (v) => v.replace(/\D/g, '').length >= 8,
+    // Same rule as App\Rules\PhoneNumber: allowed characters, 8 to 15 digits.
+    phone: (v) => /^\+?[\d\s\-().]+$/.test(v.trim()) && v.replace(/\D/g, '').length >= 8 && v.replace(/\D/g, '').length <= 15,
     message: (v) => v.trim().length > 5,
   };
   const validate = (name) => {

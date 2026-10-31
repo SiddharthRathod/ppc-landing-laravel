@@ -36,6 +36,22 @@ class ContactSubmissionResourceTest extends TestCase
             ->assertCanSeeTableRecords($submissions);
     }
 
+    public function test_default_columns_are_name_company_email_phone_and_service(): void
+    {
+        ContactSubmission::factory()->create();
+
+        $list = Livewire::test(ListContactSubmissions::class);
+
+        foreach (['name', 'company', 'email', 'phone', 'service'] as $column) {
+            $list->assertCanRenderTableColumn($column);
+        }
+
+        // Hidden by default, but available under "Columns".
+        foreach (['created_at', 'crm_status', 'sent_at'] as $column) {
+            $list->assertCanNotRenderTableColumn($column);
+        }
+    }
+
     public function test_list_can_be_filtered_by_crm_status(): void
     {
         $failed = ContactSubmission::factory()->create(['crm_status' => CrmStatus::Failed]);

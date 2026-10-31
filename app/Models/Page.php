@@ -76,7 +76,8 @@ class Page extends Model
             'title' => $this->meta_title ?: $this->title,
             'description' => $this->meta_description,
             'canonical' => $this->canonical_url ?: $this->url(),
-            'og_image' => media_url($this->og_image),
+            // No sharing image set? Use the hero photo, so shared links still show a picture.
+            'og_image' => media_url($this->og_image ?: ($this->block('hero')['image'] ?? null)),
             'robots' => $this->robots,
         ];
     }
