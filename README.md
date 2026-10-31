@@ -4,13 +4,36 @@ Landing page, admin panel and CRM-ready contact form for **Professional Photogra
 
 Take-home assignment for the Full Stack Laravel & PHP Developer role at Studio 52 Media and Technology Group.
 
-## The three requirements
+## Requested scope
 
-| Requirement | Where |
+| The brief | Where |
 |---|---|
-| Fully responsive, mobile-friendly landing page | Home page built from the reference design, checked in Chrome at phone (390 px) and desktop (1440 px) widths: hamburger menu, stacked columns, fluid headings, no horizontal scroll |
-| Admin panel to manage all page elements: content, images, videos, SEO (meta title, description, canonical URL…) | `/admin` → **Pages**: every section is an editable, reorderable block; **SEO** tab per page and per blog post; hero video (MP4) and showreel link; **Site settings** for logo, contact details and footer |
-| Contact form on the Contact Us page, integrated with the CRM, submissions stored and visible in the admin | `/contact` → saved first, then sent to the CRM by a queued job with retries; **Contact submissions** in the admin with CRM status, retry button, filters and CSV/XLSX export |
+| The **section from the reference screenshot**, frontend and backend | The **hero** on the home page: heading, Arabic line, service chips, two buttons, photo with REC badge, timecode and viewfinder corners, and the stats row. Responsive: checked at phone (390 px) and desktop (1440 px) widths, with a hamburger menu and stacked layout |
+| An **admin panel to manage the content** | `/admin` → **Pages → Home → Hero**: heading, Arabic line, text, chips, both buttons, photo and alt text, optional background video (MP4) and showreel link, and the 4 stats. Saved changes appear on the site immediately |
+| A **contact form** with Name, Company Name, Email ID and Phone Number | `/contact`: those 4 fields are required, validated on the server (Form Request, phone number rule) and in the browser; honeypot and rate limit against spam. Service and project brief are optional extras |
+| Submissions **stored in the database** and **viewable and manageable** in the admin | `/admin` → **Contact submissions**: list with search and filters, a view page per enquiry, **status** (New → Contacted → Closed) and **internal notes**, soft delete and restore, CSV/XLSX export |
+| Functional, responsive, good coding practices | Thin controllers, Form Request, service class, queued job, enums, 114 automated tests, Lighthouse 100 for Accessibility, Best Practices and SEO |
+
+### Review it in 5 minutes
+
+1. Open `/`: the hero section. Narrow the browser (or use DevTools' phone view) to see the mobile layout and menu.
+2. Log in at `/admin` (`admin@ppc.test` / `123456789`) → **Pages** → **Home** → open **Hero** → change the heading or a stat → **Save changes** → reload `/`.
+3. Open `/contact` → submit it empty (errors) → fill in the 4 fields → **Send brief**.
+4. In the admin, **Contact submissions**: the enquiry is at the top → **Update status** → set *Contacted* and add a note → open it with **View**.
+5. **Export** → choose CSV → with `php artisan queue:work` running, the download appears under the bell icon.
+
+A video walkthrough of these steps was sent with the submission email.
+
+## Beyond the brief
+
+Built in the same codebase, so the section can grow into the full page:
+
+- **The rest of the reference page**, every section editable from the admin as a block: client logos, services, portfolio film strip, industries, process, why us, testimonial, latest posts and a quote call-to-action. Sections can be added, reordered, duplicated or removed.
+- **SEO breadcrumbs (the breadcrumbs task, implemented here):** generated automatically from the route and its model, with valid **BreadcrumbList** JSON-LD, absolute URLs matching the canonical, no breadcrumbs on 404s, one trail per page. See [How it works](#how-it-works).
+- **SEO settings** per page and per post (meta title, description, canonical URL, social sharing image, robots), Open Graph and Twitter tags, Organization JSON-LD, `/sitemap.xml` and `/robots.txt`.
+- **CRM integration:** each enquiry is saved first, then sent to the CRM by a queued job with retries; failed sends can be retried from the admin. The CRM sits behind an interface, so connecting the real one is one class.
+- **Blog** (`/blog`) with an admin, drafts and scheduled posts.
+- **Site settings** for logos, phone, email, WhatsApp, footer links, cities, social links and CR/VAT numbers.
 
 ## Screenshots
 
@@ -60,7 +83,7 @@ The email is pre-filled on the login page in the local environment. Change it wi
 
 | Menu | What it manages |
 |---|---|
-| **Contact submissions** | Every enquiry from the form (read-only). CRM status badge (pending, sent, failed, skipped), **Retry CRM** button, filters, soft delete and restore, CSV/XLSX export |
+| **Contact submissions** | Every enquiry from the form. The visitor's details are read-only; the team manages the **status** (New, Contacted, Closed) and **internal notes** with **Update status**. Search, filters (status, CRM status, service, deleted), soft delete and restore, CSV/XLSX export, CRM status badge and **Retry CRM** button |
 | **Pages** | Home and Contact Us. **Sections** tab: 11 block types (hero with stats and video, client logos, services, portfolio film strip, industries, process, why us, testimonial, latest posts, quote call-to-action, contact form). Add, edit, reorder, duplicate or remove sections. **SEO** tab: meta title, description, canonical URL, social sharing image, robots |
 | **Blog posts** | Guides with rich-text body, card image, category, publish date (empty = draft, future = scheduled) and SEO fields |
 | **Site settings** | Logos, phone, email, WhatsApp number, footer tagline (English and Arabic), footer link columns, cities, social links, CR and VAT numbers |
@@ -85,7 +108,7 @@ Submissions are always saved before the CRM is called, so a CRM outage never los
 
 **Images and video.** Uploads go to the `public` disk. Below-the-fold images load lazily; the hero image loads first (`fetchpriority="high"`). The hero video is an uploaded MP4 that plays muted and looped over the photo, which stays as the poster while it loads.
 
-**Code style.** Thin controllers, Form Requests for validation, a service for business logic, a queued job for the external call, enums for statuses (`CrmStatus`, `PostStatus`) and Eloquent casts.
+**Code style.** Thin controllers, Form Requests for validation, a service for business logic, a queued job for the external call, enums for statuses (`EnquiryStatus`, `CrmStatus`, `PostStatus`) and Eloquent casts.
 
 ## Tests
 
@@ -93,7 +116,7 @@ Submissions are always saved before the CRM is called, so a CRM outage never los
 php artisan test
 ```
 
-109 tests: contact form validation and storage, breadcrumbs and BreadcrumbList, the CRM job (success, retry, failure, no double send), every admin screen (Filament/Livewire tests), page rendering from blocks, HTML escaping, blog visibility rules, SEO tags, JSON-LD, sitemap and robots.txt, and a unit test for the phone number rule. Tests use an in-memory SQLite database and fake the queue and file storage.
+114 tests: contact form validation and storage, enquiry status and notes, breadcrumbs and BreadcrumbList, the CRM job (success, retry, failure, no double send), every admin screen (Filament/Livewire tests), page rendering from blocks, HTML escaping, blog visibility rules, SEO tags, JSON-LD, sitemap and robots.txt, and a unit test for the phone number rule. Tests use an in-memory SQLite database and fake the queue and file storage.
 
 ## Lighthouse
 

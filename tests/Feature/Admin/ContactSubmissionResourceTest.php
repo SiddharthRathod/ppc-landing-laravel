@@ -3,6 +3,7 @@
 namespace Tests\Feature\Admin;
 
 use App\Enums\CrmStatus;
+use App\Enums\EnquiryStatus;
 use App\Filament\Resources\ContactSubmissions\Pages\ListContactSubmissions;
 use App\Filament\Resources\ContactSubmissions\Pages\ViewContactSubmission;
 use App\Jobs\SendSubmissionToCrm;
@@ -42,7 +43,7 @@ class ContactSubmissionResourceTest extends TestCase
 
         $list = Livewire::test(ListContactSubmissions::class);
 
-        foreach (['name', 'company', 'email', 'phone', 'service'] as $column) {
+        foreach (['name', 'company', 'email', 'phone', 'service', 'status'] as $column) {
             $list->assertCanRenderTableColumn($column);
         }
 
@@ -50,6 +51,64 @@ class ContactSubmissionResourceTest extends TestCase
         foreach (['created_at', 'crm_status', 'sent_at'] as $column) {
             $list->assertCanNotRenderTableColumn($column);
         }
+    }
+
+    public function test_status_and_notes_can_be_updated_from_the_table(): void
+    {
+        $submission = ContactSubmission::factory()->create();
+
+        Livewire::test(ListContactSubmissions::class)
+            ->callAction(TestAction::make('updateStatus')->table($submission), [
+                'status' => EnquiryStatus::Contacted->value,
+                'notes' => 'Called on Sunday, sending a quote.',
+            ])
+            ->assertHasNoFormErrors();
+
+        $submission->refresh();
+        $this->assertSame(EnquiryStatus::Contacted, $submission->status);
+        $this->assertSame('Called on Sunday, sending a quote.', $submission->notes);
+    }
+
+    public function test_status_can_be_updated_from_the_view_page(): void
+    {
+        $submission = ContactSubmission::factory()->create(['notes' => 'Old note']);
+
+        Livewire::test(ViewContactSubmission::class, ['record' => $submission->id])
+            ->callAction('updateStatus', ['status' => EnquiryStatus::Closed->value, 'notes' => 'Project booked.'])
+            ->assertHasNoFormErrors();
+
+        $submission->refresh();
+        $this->assertSame(EnquiryStatus::Closed, $submission->status);
+        $this->assertSame('Project booked.', $submission->notes);
+    }
+
+    public function test_update_form_opens_with_the_current_status_and_notes(): void
+    {
+        $submission = ContactSubmission::factory()->create(['status' => EnquiryStatus::Contacted, 'notes' => 'Old note']);
+
+        Livewire::test(ViewContactSubmission::class, ['record' => $submission->id])
+            ->mountAction('updateStatus')
+            ->assertActionDataSet(['status' => EnquiryStatus::Contacted, 'notes' => 'Old note']);
+    }
+
+    public function test_status_is_required(): void
+    {
+        $submission = ContactSubmission::factory()->create();
+
+        Livewire::test(ListContactSubmissions::class)
+            ->callAction(TestAction::make('updateStatus')->table($submission), ['status' => null])
+            ->assertHasFormErrors(['status' => 'required']);
+    }
+
+    public function test_list_can_be_filtered_by_status(): void
+    {
+        $new = ContactSubmission::factory()->create();
+        $closed = ContactSubmission::factory()->create(['status' => EnquiryStatus::Closed]);
+
+        Livewire::test(ListContactSubmissions::class)
+            ->filterTable('status', EnquiryStatus::Closed->value)
+            ->assertCanSeeTableRecords([$closed])
+            ->assertCanNotSeeTableRecords([$new]);
     }
 
     public function test_list_can_be_filtered_by_crm_status(): void

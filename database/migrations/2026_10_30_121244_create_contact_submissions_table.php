@@ -21,6 +21,8 @@ return new class extends Migration
             $table->text('message')->nullable(); // optional "project brief"
             $table->string('ip_address', 45)->nullable(); // 45 chars fits an IPv6 address
             $table->text('user_agent')->nullable();
+            $table->string('status')->default('new')->index(); // App\Enums\EnquiryStatus: follow-up by the sales team
+            $table->text('notes')->nullable();                  // internal notes, never shown to the visitor
             $table->string('crm_status')->default('pending')->index(); // App\Enums\CrmStatus
             $table->text('crm_response')->nullable(); // CRM reference, or the error message on failure
             $table->timestamp('sent_at')->nullable();

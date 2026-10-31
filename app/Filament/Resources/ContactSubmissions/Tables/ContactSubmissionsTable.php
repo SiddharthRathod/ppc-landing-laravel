@@ -4,7 +4,9 @@ namespace App\Filament\Resources\ContactSubmissions\Tables;
 
 use App\Enums\CrmStatus;
 use App\Filament\Exports\ContactSubmissionExporter;
+use App\Enums\EnquiryStatus;
 use App\Filament\Resources\ContactSubmissions\Actions\RetryCrmAction;
+use App\Filament\Resources\ContactSubmissions\Actions\UpdateStatusAction;
 use App\Models\ContactSubmission;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -43,6 +45,9 @@ class ContactSubmissionsTable
                 TextColumn::make('service')
                     ->placeholder('-')
                     ->toggleable(isToggledHiddenByDefault: false),
+                TextColumn::make('status')
+                    ->badge() // label and colour come from the EnquiryStatus enum
+                    ->sortable(),
                 TextColumn::make('crm_status')
                     ->label('CRM')
                     ->badge() // label and colour come from the CrmStatus enum
@@ -55,6 +60,8 @@ class ContactSubmissionsTable
             ])
             ->defaultSort('created_at', direction: 'desc')
             ->filters([
+                SelectFilter::make('status')
+                    ->options(EnquiryStatus::class),
                 SelectFilter::make('crm_status')
                     ->label('CRM status')
                     ->options(CrmStatus::class),
@@ -72,6 +79,7 @@ class ContactSubmissionsTable
             ])
             ->recordActions([
                 ViewAction::make(),
+                UpdateStatusAction::make(),
                 RetryCrmAction::make(),
             ])
             ->toolbarActions([

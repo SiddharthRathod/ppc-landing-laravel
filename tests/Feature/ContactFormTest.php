@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Enums\CrmStatus;
+use App\Enums\EnquiryStatus;
 use App\Jobs\SendSubmissionToCrm;
 use App\Models\ContactSubmission;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -51,6 +52,7 @@ class ContactFormTest extends TestCase
         $submission = ContactSubmission::sole();
         $this->assertSame('ahmed@example.sa', $submission->email);
         $this->assertSame(CrmStatus::Pending, $submission->crm_status);
+        $this->assertSame(EnquiryStatus::New, $submission->status);
         $this->assertNotNull($submission->ip_address);
 
         Queue::assertPushed(SendSubmissionToCrm::class, fn ($job) => $job->submission->is($submission));

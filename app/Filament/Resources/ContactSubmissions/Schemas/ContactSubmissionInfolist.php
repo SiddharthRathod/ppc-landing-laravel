@@ -24,6 +24,14 @@ class ContactSubmissionInfolist
                         TextEntry::make('created_at')->label('Received')->dateTime(),
                         TextEntry::make('message')->placeholder('-')->columnSpanFull(),
                     ]),
+                Section::make('Follow-up')
+                    ->description('Change with "Update status" at the top of the page.')
+                    ->columns(2)
+                    ->components([
+                        TextEntry::make('status')->badge(),
+                        TextEntry::make('updated_at')->label('Last updated')->since(),
+                        TextEntry::make('notes')->label('Internal notes')->placeholder('No notes yet')->columnSpanFull(),
+                    ]),
                 Section::make('CRM')
                     ->columns(2)
                     ->components([

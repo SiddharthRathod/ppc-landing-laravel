@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\ContactSubmissions\Pages;
 
 use App\Filament\Resources\ContactSubmissions\Actions\RetryCrmAction;
+use App\Filament\Resources\ContactSubmissions\Actions\UpdateStatusAction;
 use App\Filament\Resources\ContactSubmissions\ContactSubmissionResource;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\ForceDeleteAction;
@@ -16,6 +17,7 @@ class ViewContactSubmission extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
+            UpdateStatusAction::make(),
             RetryCrmAction::make(),
             DeleteAction::make(),
             RestoreAction::make(),

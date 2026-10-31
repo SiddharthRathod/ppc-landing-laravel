@@ -3,6 +3,7 @@
 namespace App\Filament\Exports;
 
 use App\Enums\CrmStatus;
+use App\Enums\EnquiryStatus;
 use App\Models\ContactSubmission;
 use Filament\Actions\Exports\ExportColumn;
 use Filament\Actions\Exports\Exporter;
@@ -31,6 +32,10 @@ class ContactSubmissionExporter extends Exporter
             ExportColumn::make('phone'),
             ExportColumn::make('service'),
             ExportColumn::make('message'),
+            ExportColumn::make('status')
+                ->formatStateUsing(fn (EnquiryStatus $state): string => $state->getLabel()),
+            ExportColumn::make('notes')
+                ->label('Internal notes'),
             ExportColumn::make('crm_status')
                 ->label('CRM status')
                 ->formatStateUsing(fn (CrmStatus $state): string => $state->getLabel()),
