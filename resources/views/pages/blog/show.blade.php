@@ -27,5 +27,7 @@
   </div>
 </article>
 
-@include('partials.contact-cta')
+@if ($quoteCta)
+  @include('sections.contact_cta', ['data' => $quoteCta])
+@endif
 @endsection

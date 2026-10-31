@@ -2,17 +2,12 @@
 
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\PageController;
 use Illuminate\Support\Facades\Route;
 
-// SEO values are hardcoded for now; they move to the pages table (admin panel) later.
-Route::view('/', 'pages.home', ['seo' => [
-    'title' => 'Professional Photography Company | Media Production in Saudi Arabia',
-    'description' => 'Film, CGI, animation, photography, drone, timelapse and audio production across Saudi Arabia.',
-]])->name('home');
-
-Route::view('/contact', 'pages.contact', ['seo' => [
-    'title' => 'Contact Us | Professional Photography Company',
-]])->name('contact');
+// Content and SEO of both pages are edited in the admin (Pages).
+Route::get('/', [PageController::class, 'home'])->name('home');
+Route::get('/contact', [PageController::class, 'contact'])->name('contact');
 
 Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
 // {post:slug}: look the post up by its slug instead of its id.

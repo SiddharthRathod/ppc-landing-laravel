@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\PostStatus;
+use App\Models\Page;
 use App\Models\Post;
 use Illuminate\View\View;
 
@@ -28,6 +29,8 @@ class BlogController extends Controller
         return view('pages.blog.show', [
             'post' => $post,
             'seo' => $post->seo(),
+            // Reuse the home page's "Get a quote" section under every article.
+            'quoteCta' => Page::where('slug', 'home')->first()?->block('contact_cta'),
         ]);
     }
 }

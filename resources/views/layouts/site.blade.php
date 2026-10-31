@@ -4,9 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="csrf-token" content="{{ csrf_token() }}">
-{{-- SEO: pass $seo from the controller (later: load it from the admin panel) --}}
+{{-- SEO: $seo comes from the controller (Page::seo() or Post::seo()) --}}
 <title>{{ $seo['title'] ?? 'Professional Photography Company | Media Production in Saudi Arabia' }}</title>
 <meta name="description" content="{{ $seo['description'] ?? '' }}">
+<meta name="robots" content="{{ $seo['robots'] ?? 'index,follow' }}">
 <link rel="canonical" href="{{ $seo['canonical'] ?? url()->current() }}">
 <meta property="og:title" content="{{ $seo['og_title'] ?? $seo['title'] ?? '' }}">
 <meta property="og:description" content="{{ $seo['description'] ?? '' }}">

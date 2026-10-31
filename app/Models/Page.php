@@ -46,4 +46,38 @@ class Page extends Model
     {
         $query->where('is_published', true);
     }
+
+    /**
+     * The page's public URL: "home" is the site root, others are /{slug}.
+     */
+    public function url(): string
+    {
+        return $this->slug === 'home' ? route('home') : url($this->slug);
+    }
+
+    /**
+     * The data of the first section of this type, e.g. block('contact_cta'), or null.
+     *
+     * @return array<string, mixed>|null
+     */
+    public function block(string $type): ?array
+    {
+        return collect($this->content ?? [])->firstWhere('type', $type)['data'] ?? null;
+    }
+
+    /**
+     * Values for the layout's <head> tags; admin SEO fields first, then fallbacks.
+     *
+     * @return array<string, string|null>
+     */
+    public function seo(): array
+    {
+        return [
+            'title' => $this->meta_title ?: $this->title,
+            'description' => $this->meta_description,
+            'canonical' => $this->canonical_url ?: $this->url(),
+            'og_image' => media_url($this->og_image),
+            'robots' => $this->robots,
+        ];
+    }
 }

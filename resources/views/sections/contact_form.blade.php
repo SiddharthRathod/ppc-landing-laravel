@@ -1,15 +1,20 @@
+{{-- Contact form block (App\Filament\Blocks\ContactFormBlock). The form fields match StoreContactRequest. --}}
 <section class="bg-ink py-14 text-white sm:py-[72px] lg:py-[100px]">
   <div class="wrap grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-[72px]">
     <div>
       <span class="accent-bar"></span>
-      <p class="eyebrow mt-[26px] text-ember">Contact us</p>
-      <h1 class="mt-[22px] text-[clamp(36px,5vw,60px)] leading-[1.02]">Get a quote within 24 hours</h1>
-      <p class="mt-5 max-w-[440px] text-base leading-[1.65] text-silver lg:text-lg">Tell us what you need filmed, photographed or animated. A producer replies with scope, timeline and price within one working day.</p>
+      @if (! empty($data['eyebrow']))<p class="eyebrow mt-[26px] text-ember">{{ $data['eyebrow'] }}</p>@endif
+      <h1 class="mt-[22px] text-[clamp(36px,5vw,60px)] leading-[1.02]">{!! nl2br(e($data['heading'] ?? '')) !!}</h1>
+      @if (! empty($data['text']))
+        <p class="mt-5 max-w-[440px] text-base leading-[1.65] text-silver lg:text-lg">{{ $data['text'] }}</p>
+      @endif
       <div class="mt-8 flex flex-col gap-3 text-lg font-bold break-words">
         @if ($settings->phone)<a href="{{ $settings->phoneHref() }}" class="hover:text-ember">{{ $settings->phone }}</a>@endif
         @if ($settings->email)<a href="mailto:{{ $settings->email }}" class="hover:text-ember">{{ $settings->email }}</a>@endif
       </div>
-      <p lang="ar" dir="rtl" class="mt-[26px] text-left font-arabic text-[22px] font-semibold">احصل على عرض سعر خلال ٢٤ ساعة</p>
+      @if (! empty($data['heading_ar']))
+        <p lang="ar" dir="rtl" class="mt-[26px] text-left font-arabic text-[22px] font-semibold">{{ $data['heading_ar'] }}</p>
+      @endif
     </div>
 
     <form action="{{ route('contact.store') }}" method="post" novalidate data-contact-form class="border border-ink-line bg-ink-2 p-5 cut-40 sm:p-8 lg:p-10">

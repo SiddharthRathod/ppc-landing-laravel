@@ -31,12 +31,12 @@ class AppServiceProvider extends ServiceProvider
     {
         // $settings in every site view (header, footer, WhatsApp button, contact blocks).
         // once(): one database query per request, however many views ask for it.
-        View::composer(['layouts.site', 'pages.*', 'partials.*'], function ($view) {
+        View::composer(['layouts.site', 'pages.*', 'partials.*', 'sections.*'], function ($view) {
             $view->with('settings', once(fn () => SiteSetting::current()));
         });
 
-        // Home page blog cards: the 3 latest published posts.
-        View::composer('partials.blog', function ($view) {
+        // "Latest blog posts" section: the 3 latest published posts.
+        View::composer('sections.blog', function ($view) {
             $view->with('latestPosts', Post::published()->latest('published_at')->take(3)->get());
         });
     }

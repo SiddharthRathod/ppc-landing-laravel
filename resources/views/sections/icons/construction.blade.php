@@ -1,0 +1,1 @@
+<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21V4h9"/><path d="M4 4l4-2"/><path d="M13 4v3"/><path d="M11 7h4v3h-4z"/><path d="M2 21h20"/><path d="M14 21v-7h6v7"/><path d="M4 9h3"/></svg>
