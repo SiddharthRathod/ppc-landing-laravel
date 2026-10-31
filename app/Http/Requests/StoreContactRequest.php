@@ -24,11 +24,12 @@ class StoreContactRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'company' => ['nullable', 'string', 'max:255'],
+            // Required fields = the brief: name, company name, email, phone. Service and message are optional extras.
+            'company' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255'],
             'phone' => ['required', 'string', 'max:30', new PhoneNumber],
             'service' => ['nullable', 'string', 'max:255'],
-            'message' => ['required', 'string', 'max:5000'],
+            'message' => ['nullable', 'string', 'max:5000'],
             // Honeypot: hidden from people, so only bots fill it in.
             'website' => ['prohibited'],
         ];

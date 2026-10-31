@@ -18,12 +18,13 @@
 (() => {
   const form = document.querySelector('[data-contact-form]');
   if (!form) return;
+  // The required fields (same as StoreContactRequest). Service and message are optional.
   const checks = {
     name: (v) => v.trim().length > 1,
+    company: (v) => v.trim().length > 0,
     email: (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()),
     // Same rule as App\Rules\PhoneNumber: allowed characters, 8 to 15 digits.
     phone: (v) => /^\+?[\d\s\-().]+$/.test(v.trim()) && v.replace(/\D/g, '').length >= 8 && v.replace(/\D/g, '').length <= 15,
-    message: (v) => v.trim().length > 5,
   };
   const validate = (name) => {
     const field = form.elements[name];

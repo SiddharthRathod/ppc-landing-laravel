@@ -71,14 +71,30 @@ class ContactFormTest extends TestCase
         $response = $this->from(route('contact'))->post(route('contact.store'), []);
 
         $response->assertRedirect(route('contact'));
-        $response->assertSessionHasErrors(['name', 'email', 'phone', 'message']);
+        $response->assertSessionHasErrors(['name', 'company', 'email', 'phone']);
+        $response->assertSessionDoesntHaveErrors(['service', 'message']);
         $response->assertSessionMissing('contact_sent');
         $this->assertDatabaseCount('contact_submissions', 0);
     }
 
+    public function test_the_four_required_fields_are_enough(): void
+    {
+        // Exactly the fields in the brief: name, company name, email, phone.
+        $this->post(route('contact.store'), [
+            'name' => 'Ahmed Al-Harbi',
+            'company' => 'Saedan',
+            'email' => 'ahmed@example.sa',
+            'phone' => '+966 55 111 6121',
+        ])->assertSessionHasNoErrors();
+
+        $submission = ContactSubmission::sole();
+        $this->assertSame('Saedan', $submission->company);
+        $this->assertNull($submission->message);
+    }
+
     public function test_optional_fields_can_be_left_empty(): void
     {
-        $data = array_merge($this->validData(), ['company' => '', 'service' => '']);
+        $data = array_merge($this->validData(), ['service' => '', 'message' => '']);
 
         $response = $this->from(route('contact'))->post(route('contact.store'), $data);
 

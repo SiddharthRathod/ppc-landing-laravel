@@ -27,8 +27,9 @@
           <p data-error-for="name" class="mt-1.5 {{ $errors->has('name') ? '' : 'hidden' }} text-[13px] text-ember">{{ $errors->first('name') ?: 'Enter your name.' }}</p>
         </div>
         <div>
-          <label for="company" class="mb-2 block text-[13px] font-semibold text-cloud">Company or entity</label>
-          <input id="company" name="company" value="{{ old('company') }}" type="text" autocomplete="organization" class="field" placeholder="Company name">
+          <label for="company" class="mb-2 block text-[13px] font-semibold text-cloud">Company name *</label>
+          <input id="company" name="company" value="{{ old('company') }}" type="text" required autocomplete="organization" class="field" placeholder="Company or government entity">
+          <p data-error-for="company" class="mt-1.5 {{ $errors->has('company') ? '' : 'hidden' }} text-[13px] text-ember">{{ $errors->first('company') ?: 'Enter your company name.' }}</p>
         </div>
         <div>
           <label for="email" class="mb-2 block text-[13px] font-semibold text-cloud">Work email *</label>
@@ -57,9 +58,9 @@
           </select><svg class="pointer-events-none absolute top-1/2 right-3.5 -translate-y-1/2 text-silver" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></div>
         </div>
         <div class="sm:col-span-2">
-          <label for="message" class="mb-2 block text-[13px] font-semibold text-cloud">Project brief *</label>
-          <textarea id="message" name="message" rows="5" required class="field min-h-[140px] py-3.5" placeholder="Location, dates, deliverables, budget range">{{ old('message') }}</textarea>
-          <p data-error-for="message" class="mt-1.5 {{ $errors->has('message') ? '' : 'hidden' }} text-[13px] text-ember">{{ $errors->first('message') ?: 'Tell us a little about the project.' }}</p>
+          <label for="message" class="mb-2 block text-[13px] font-semibold text-cloud">Project brief (optional)</label>
+          <textarea id="message" name="message" rows="5" class="field min-h-[140px] py-3.5" placeholder="Location, dates, deliverables, budget range">{{ old('message') }}</textarea>
+          @error('message')<p class="mt-1.5 text-[13px] text-ember">{{ $message }}</p>@enderror
         </div>
         <div class="hidden" aria-hidden="true"><label for="website">Website</label><input id="website" name="website" type="text" tabindex="-1" autocomplete="off"></div>
       </div>

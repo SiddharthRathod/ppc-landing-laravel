@@ -17,12 +17,12 @@ class ContactSubmissionInfolist
                     ->columns(2)
                     ->components([
                         TextEntry::make('name'),
-                        TextEntry::make('company')->placeholder('-'),
+                        TextEntry::make('company'),
                         TextEntry::make('email')->copyable(),
                         TextEntry::make('phone')->copyable(),
                         TextEntry::make('service')->placeholder('-'),
                         TextEntry::make('created_at')->label('Received')->dateTime(),
-                        TextEntry::make('message')->columnSpanFull(),
+                        TextEntry::make('message')->placeholder('-')->columnSpanFull(),
                     ]),
                 Section::make('CRM')
                     ->columns(2)

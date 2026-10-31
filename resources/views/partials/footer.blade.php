@@ -40,7 +40,7 @@
 
 @if ($settings->whatsappUrl())
 <a href="{{ $settings->whatsappUrl() }}" aria-label="Chat with us on WhatsApp"
-  class="fixed right-4 bottom-4 z-50 inline-flex size-[58px] items-center justify-center gap-2.5 rounded-full bg-whatsapp text-[15px] font-bold text-white shadow-[0_8px_24px_rgba(28,31,34,.28)] sm:right-7 sm:bottom-7 sm:h-[60px] sm:w-auto sm:pr-[22px] sm:pl-3.5">
+  class="fixed right-4 bottom-4 z-50 inline-flex size-[58px] items-center justify-center gap-2.5 rounded-full bg-whatsapp text-[15px] font-bold text-ink shadow-[0_8px_24px_rgba(28,31,34,.28)] sm:right-7 sm:bottom-7 sm:h-[60px] sm:w-auto sm:pr-[22px] sm:pl-3.5">
   <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 11.6a8.6 8.6 0 0 1-12.7 7.6L3.3 20.5l1.3-4.3a8.6 8.6 0 1 1 15.9-4.6z"/><path d="M9 8.2c-.2 3.3 3.3 6.8 6.6 6.6l1-1.3-2-1.1-.9.8a4.6 4.6 0 0 1-2.3-2.3l.8-.9-1.1-2z" fill="currentColor" stroke-width="1"/></svg>
   <span class="sr-only sm:not-sr-only">Chat on WhatsApp</span>
 </a>

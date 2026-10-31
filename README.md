@@ -12,6 +12,16 @@ Take-home assignment for the Full Stack Laravel & PHP Developer role at Studio 5
 | Admin panel to manage all page elements: content, images, videos, SEO (meta title, description, canonical URL…) | `/admin` → **Pages**: every section is an editable, reorderable block; **SEO** tab per page and per blog post; hero video (MP4) and showreel link; **Site settings** for logo, contact details and footer |
 | Contact form on the Contact Us page, integrated with the CRM, submissions stored and visible in the admin | `/contact` → saved first, then sent to the CRM by a queued job with retries; **Contact submissions** in the admin with CRM status, retry button, filters and CSV/XLSX export |
 
+## Screenshots
+
+| Desktop | Phone |
+|---|---|
+| ![Home page on desktop](docs/screenshots/home-desktop.jpg) | <img src="docs/screenshots/home-mobile.jpg" alt="Home page on a phone" width="260"> |
+
+![Services section](docs/screenshots/home-services.jpg)
+
+![Admin: page sections editor](docs/screenshots/admin-page-sections.png)
+
 ## Quick start
 
 Requirements: PHP 8.2+, Composer, Node 20+, and MySQL 8 or SQLite.
@@ -83,6 +93,17 @@ php artisan test
 
 99 tests: contact form validation and storage, the CRM job (success, retry, failure, no double send), every admin screen (Filament/Livewire tests), page rendering from blocks, HTML escaping, blog visibility rules, SEO tags, JSON-LD, sitemap and robots.txt, and a unit test for the phone number rule. Tests use an in-memory SQLite database and fake the queue and file storage.
 
+## Lighthouse
+
+Home page, Lighthouse 12 in Chrome, measured locally with `APP_ENV=production`:
+
+| | Performance | Accessibility | Best Practices | SEO |
+|---|---|---|---|---|
+| Desktop | 99 | 100 | 100 | 100 |
+| Mobile | 84 | 100 | 100 | 100 |
+
+Mobile performance was measured on `php artisan serve`, which has no gzip compression or caching; a real web server adds both. The remaining gain is responsive image sizes: phones currently download the same 1400 px images as desktop (see "Next steps"). Layout shift is 0.
+
 ## Deploying
 
 - `APP_ENV=production`, `APP_DEBUG=false` and `APP_URL=https://your-domain` (canonical URLs and the sitemap use it; robots.txt only allows indexing in production).
@@ -97,3 +118,11 @@ php artisan test
 - **Arabic:** Arabic lines from the design are included and editable; a full Arabic (RTL) version is not in scope until confirmed.
 - **Contact Us page:** not in the reference design, so it was designed in the same style.
 - **Blog pages** (`/blog`, `/blog/{slug}`) were added so the home page guide cards have somewhere to link to.
+- **Accessibility:** two colours were adjusted to pass WCAG AA contrast: the dark orange used for small labels (`#A9461A` → `#9A3F17`) and the text on the WhatsApp button (dark instead of white on WhatsApp green).
+
+## Next steps
+
+- **Responsive images:** create smaller versions of each uploaded image (e.g. 480, 960, 1400 px WebP) and serve them with `srcset`, so phones download less. The biggest remaining mobile performance gain.
+- **Connect the real CRM** once it is known (one `CrmClient` class).
+- **Arabic (RTL) version** if it is in scope.
+- **Admin email notification** for new submissions.

@@ -14,11 +14,11 @@ return new class extends Migration
         Schema::create('contact_submissions', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('company')->nullable();
+            $table->string('company');
             $table->string('email');
             $table->string('phone', 30);
             $table->string('service')->nullable();
-            $table->text('message');
+            $table->text('message')->nullable(); // optional "project brief"
             $table->string('ip_address', 45)->nullable(); // 45 chars fits an IPv6 address
             $table->text('user_agent')->nullable();
             $table->string('crm_status')->default('pending')->index(); // App\Enums\CrmStatus

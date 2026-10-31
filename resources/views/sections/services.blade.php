@@ -22,7 +22,7 @@
               <span class="min-h-10 flex-1"></span>
               <span class="accent-bar w-8"></span>
               <span class="mt-3 block text-2xl font-extrabold tracking-[-.02em]">{{ $card['title'] }}</span>
-              @if (! empty($card['text']))<span class="mt-1.5 block text-[13px] leading-[1.5] text-snow">{{ $card['text'] }}</span>@endif
+              @if (! empty($card['text']))<span class="mt-1.5 block text-[13px] leading-[1.5] text-white">{{ $card['text'] }}</span>@endif
             </span>
             <span class="grid min-h-[300px] grid-cols-2 grid-rows-2 gap-1.5 sm:min-h-0">
               @foreach ($card['sub_images'] as $photo)

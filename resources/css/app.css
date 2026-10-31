@@ -30,7 +30,7 @@
   --color-snow: #F0F2F3;
   --color-orange: #D9622B;
   --color-orange-dark: #C4561F;
-  --color-rust: #A9461A;
+  --color-rust: #9A3F17; /* was #A9461A; one shade darker so small orange text passes WCAG AA (4.5:1) on the grey sections */
   --color-ember: #E2733F;
   --color-peach: #FBEAE2;
   --color-whatsapp: #25D366;

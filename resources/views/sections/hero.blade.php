@@ -56,7 +56,8 @@
   @if (! empty($data['stats']))
     <dl class="wrap mt-11 grid grid-cols-2 gap-x-5 gap-y-7 border-t border-line pt-10 lg:mt-16 lg:grid-cols-4 lg:gap-10">
       @foreach ($data['stats'] as $stat)
-        <div class="flex flex-col"><span class="accent-bar"></span><dd class="order-1 mt-5 text-[38px] leading-none font-extrabold tracking-[-.04em] lg:text-[46px]">{{ $stat['value'] }}</dd><dt class="order-2 mt-2 text-[15px] leading-[1.55] text-muted">{{ $stat['label'] }}</dt></div>
+        {{-- Valid <dl>: <dt> before <dd>, nothing else in the group. order-* shows the value above the label. --}}
+        <div class="flex flex-col"><dt class="order-2 mt-2 text-[15px] leading-[1.55] text-muted">{{ $stat['label'] }}</dt><dd class="order-1"><span class="accent-bar"></span><span class="mt-5 block text-[38px] leading-none font-extrabold tracking-[-.04em] lg:text-[46px]">{{ $stat['value'] }}</span></dd></div>
       @endforeach
     </dl>
   @endif
